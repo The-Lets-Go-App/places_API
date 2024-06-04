@@ -1,0 +1,14 @@
+[
+    {
+        "name_of_place": "Fiction Night Club",
+        "location": "Toronto Ontario",
+        "images": [],
+        "duration_min": 1,
+        "duration_max" : 3,
+        "rating" : 4,
+        "pricing_min": 50,
+        "pricing_max": 500,
+        "description": "Fiction Nightclub, nestled in the heart of the city's vibrant nightlife district, offers an escape into a world where fantasy meets reality.",
+        "num_of_notes": 21
+    }
+]
