@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Excel to JSON Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+        }
+
+        .input-container input[type="file"] {
+            display: none;
+        }
+
+        .input-container label {
+            display: block;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .input-container label:hover {
+            background-color: #0056b3;
+        }
+
+        .btn {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    
+</head>
+
+<body>
+    <div class="container">
+        <div class="input-container">
+            <input type="file" id="excel_file" accept=".xlsx, .xls" />
+            <label for="excel_file">
+                Select Excel File
+            </label>
+        </div>
+
+        <button class="btn" id="convert_btn">
+            Convert to JSON
+        </button>
+
+        <div class="input-container">
+            <textarea id="json_data" rows="10" cols="50" readonly>
+              </textarea>
+        </div>
+
+        <button class="btn" id="download_btn">
+            Download JSON File
+        </button>
+        <!-- <button class="btn" id="overwrite_btn">
+            Overwrite placesAPI
+        </button> -->
+    </div>
+
+    <script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js">
+    </script>
+    <script src=”index.js”></script>
+    <script>
+        document
+            .getElementById("convert_btn")
+            .addEventListener("click", function () {
+                const input = document.getElementById("excel_file");
+                readXlsxFile(input.files[0]).then(function (data) {
+                    const headers = data[0];
+                    const jsonData = [];
+                    for (let i = 1; i < data.length; i++) {
+                        const temp = {};
+                        for (let j = 0; j < headers.length; j++) {
+                            temp[headers[j]] = data[i][j];
+                        }
+                        jsonData.push(temp);
+                    }
+                    document.getElementById("json_data")
+                        .value = JSON.stringify(
+                            jsonData,
+                            null,
+                            2
+                        );
+                });
+            });
+
+        document
+            .getElementById("download_btn")
+            .addEventListener("click", function () {
+                const jsonData = document.getElementById("json_data").value;
+                
+                downloadObjectAsJson(jsonData, "placesAPI");
+            });
+
+
+
+        function downloadObjectAsJson(jsonData, filename) {
+            const dataStr =
+                "data:text/json;charset=utf-8," +
+                encodeURIComponent(jsonData);
+            const downloadAnchorNode = document.createElement("a");
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", filename + ".json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
+//         function updateFileWithJson(jsonData, filename) {
+//         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(jsonData);
+//         const downloadAnchorNode = document.createElement("a");
+//         downloadAnchorNode.setAttribute("href", dataStr);
+//         downloadAnchorNode.setAttribute("places_api", filename + ".json");
+//         document.body.appendChild(downloadAnchorNode);
+//         downloadAnchorNode.click();
+//         document.body.removeChild(downloadAnchorNode); // Remove the anchor node
+// }
+
+//         document
+//             .getElementById("overwrite_btn")
+//             .addEventListener("click", function () {
+//                 const jsonData = document.getElementById("json_data").value;
+//                 console.log("function works")
+//                 updateFileWithJson(jsonData, "placesAPI");
+//             });
+    </script> 
+</body>
+
+</html>
